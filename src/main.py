@@ -2,8 +2,8 @@ import pygame
 import os
 
 import config.color         #import colors from color.py
-import config.constants     #import constants from constants.py
-from config.animations import idle_frames, walkr_frames
+from config.constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH    #import constants from constants.py
+from config.animations import idle, walkr, walkl
 
 frame_timer = 0
 frame_index = 0
@@ -11,20 +11,18 @@ frame_index = 0
 pygame.init()
 
 #1. Game Window
-SCREEN = pygame.display.set_mode((config.constants.SCREEN_WIDTH, config.constants.SCREEN_HEIGHT))
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Lily's Adventure")
 
 
-def draw_window():
+def draw_window(chara_frame):
     global frame_timer
     global frame_index
-    frame_timer = (frame_timer + 1) 
-    if frame_timer==10:
-        frame_index = (frame_index + 1) % 6
-        frame_timer = 0
+    frame_timer = (frame_timer + 1) % FPS
     print(frame_timer)
     SCREEN.fill(config.color.BLACK)
-    SCREEN.blit(walkr_frames[frame_index],(600,350))
+
+    SCREEN.blit(chara_frame.animate(frame_timer),(SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
     pygame.display.update()
 
 
@@ -34,14 +32,26 @@ def main():
 #2. Game Loop
     run = True
     while run:
-        clock.tick(config.constants.FPS)                 #LIMIT FPS
+        clock.tick(FPS)                 #LIMIT FPS
 #3. Game Event Handler
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
+        keys = pygame.key.get_pressed()
+        frame_type = idle
+
+        if keys[pygame.K_d]:
+            print("d key is being pressed!")
+            frame_type = walkr
+
+        if keys[pygame.K_a]:
+            print("a key is being pressed!")
+            frame_type = walkl
             
-        draw_window()
+        draw_window(frame_type)
             
     pygame.quit()
 
