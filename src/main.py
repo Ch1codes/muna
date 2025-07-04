@@ -2,7 +2,7 @@ import pygame
 
 import config.color         #import colors from color.py
 from config.constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH    #import constants from constants.py
-from config.movements import Position, character_movement
+from config.movements import Character_state
 
 pygame.init()
 
@@ -10,17 +10,16 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Lily's Adventure")
 
-def draw_window(chara_frame, frame_timer, character_position):
+def draw_window(character_state, frame_timer):
     SCREEN.fill(config.color.BLACK)
-    SCREEN.blit(chara_frame.animate(frame_timer),(character_position.x,character_position.y))
+    SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
     pygame.display.update()
 
 
 def main():
     clock = pygame.time.Clock()
     frame_timer = 0
-    direction = [0]
-    character_position = Position(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)      # original character position
+    character_state = Character_state(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0)      # original character position and direction ..... look at line 35
 #2. Game Loop
     run = True
     while run:
@@ -33,11 +32,14 @@ def main():
 
         keys = pygame.key.get_pressed()
         
-        frame_type = character_movement(keys, direction, character_position)        # function is in movement.py 
+        character_state.character_movement(keys)                    # function is in movement.py..... line 22 required for this
 
-        frame_timer = (frame_timer + 1) % FPS                                       # frame counter ; may need to create a better way
+        frame_timer = (frame_timer + 1) % FPS                      # frame counter ; may need to create a better way
 
-        draw_window(frame_type, frame_timer, character_position)                    # parameters (what frame to animate, fps counter, position of character)
+        draw_window(
+            character_state,
+            frame_timer
+            )                                                     # parameters (character movement update, fps counter)
             
     pygame.quit()
 
