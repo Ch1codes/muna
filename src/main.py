@@ -1,12 +1,8 @@
 import pygame
-import os
 
 import config.color         #import colors from color.py
 from config.constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH    #import constants from constants.py
-from config.animations import idle, walkr, walkl
-
-frame_timer = 0
-frame_index = 0
+from config.movements import Position, character_movement
 
 pygame.init()
 
@@ -14,44 +10,34 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Lily's Adventure")
 
-
-def draw_window(chara_frame):
-    global frame_timer
-    global frame_index
-    frame_timer = (frame_timer + 1) % FPS
-    print(frame_timer)
+def draw_window(chara_frame, frame_timer, character_position):
     SCREEN.fill(config.color.BLACK)
-
-    SCREEN.blit(chara_frame.animate(frame_timer),(SCREEN_WIDTH/2,SCREEN_HEIGHT/2))
+    SCREEN.blit(chara_frame.animate(frame_timer),(character_position.x,character_position.y))
     pygame.display.update()
 
 
 def main():
     clock = pygame.time.Clock()
-
+    frame_timer = 0
+    direction = [0]
+    character_position = Position(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)      # original character position
 #2. Game Loop
     run = True
     while run:
         clock.tick(FPS)                 #LIMIT FPS
 #3. Game Event Handler
 
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
         keys = pygame.key.get_pressed()
-        frame_type = idle
+        
+        frame_type = character_movement(keys, direction, character_position)        # function is in movement.py 
 
-        if keys[pygame.K_d]:
-            print("d key is being pressed!")
-            frame_type = walkr
+        frame_timer = (frame_timer + 1) % FPS                                       # frame counter ; may need to create a better way
 
-        if keys[pygame.K_a]:
-            print("a key is being pressed!")
-            frame_type = walkl
-            
-        draw_window(frame_type)
+        draw_window(frame_type, frame_timer, character_position)                    # parameters (what frame to animate, fps counter, position of character)
             
     pygame.quit()
 
