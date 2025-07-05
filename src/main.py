@@ -13,16 +13,20 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Lily's Adventure")
 
 
-def draw_window(chara_frame,pos, frame_timer):
-    
-    #SCREEN.fill(config.color.BLACK)
+# def draw_window(chara_frame,pos, frame_timer):
 
-    SCREEN.blit(chara_frame.animate(frame_timer),(pos.x,pos.y))
-    pygame.display.update()
+#     SCREEN.blit(chara_frame.animate(frame_timer),(pos.x,pos.y))
+#     pygame.display.update()
 
+def load_assets():
+    Level.level1.preload()
 
 def main():
     clock = pygame.time.Clock()
+    
+    load_assets()
+    
+    #player_pos not needed, should be defined in each levels
     player_pos = Position(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
     frame_timer = 0
 
@@ -42,9 +46,9 @@ def main():
 
         frame_type, player_pos = movement(player_pos)
         
-        Level.level1.draw(SCREEN)
+        Level.level1.draw(SCREEN, frame_type, player_pos, frame_timer)
         
-        draw_window(frame_type, player_pos, frame_timer)
+        #draw_window(frame_type, player_pos, frame_timer)
         frame_timer = (frame_timer + 1) % FPS
         
             
