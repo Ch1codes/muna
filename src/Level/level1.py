@@ -6,37 +6,46 @@ from config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 SKELETONS= []
 SKELETONS_X= []
 SKELETONS_Y= []
+SKELETONSX_CHANGE= []
+SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 6
 
+    
     
 
 def preload():
     global LEVEL1_BG_IMAGE, BUFFER
     
-    LEVEL1_BG= pygame.image.load(os.path.join('Assets','level1-bg.png')).convert()
+    LEVEL1_BG= pygame.image.load(os.path.join('Assets','Background','level1-bg.png')).convert()
     LEVEL1_BG_IMAGE= pygame.transform.scale(LEVEL1_BG, (1400, 900))
-
-    # SKELETONS= pygame.image.load(os.path.join('Assets','skeletons.png')).convert_alpha()
-    # SKELETONS_IMG= pygame.transform.scale(SKELETONS, (50,50))
-
-    # SKELETONS_X= random.randint(400,1350)
-    # SKELETONS_Y= random.randint(50,850)
     
     for skeletons in range(NO_of_SKELETONS):
-        SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets','skeletons.png')).convert_alpha(), (50,50)))
+        SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,50)))
         SKELETONS_X.append(random.randint(400,1350))
         SKELETONS_Y.append(random.randint(50,850))
+        SKELETONSX_CHANGE.append(40)
+        SKELETONSY_CHANGE.append(1)
 
     BUFFER = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     BUFFER.blit(LEVEL1_BG_IMAGE, (0, 0))
 
 
-def draw(SCREEN, chara_frame,pos, frame_timer):
+def draw(SCREEN, character_state, frame_timer):
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
         SCREEN.blit(SKELETONS[i], (SKELETONS_X[i], SKELETONS_Y[i]))
+        
+        SKELETONS_Y[i] += SKELETONSY_CHANGE[i]
+        
+        if SKELETONS_Y[i] > 850:
+            SKELETONSY_CHANGE[i]= -1
+            SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
+            
+        elif SKELETONS_Y[i] < 0:
+            SKELETONSY_CHANGE[i]= 1
+            SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
     
-    SCREEN.blit(chara_frame.animate(frame_timer),(pos.x,pos.y))
+    SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
     
     pygame.display.update()
 

@@ -20,24 +20,62 @@ def load_frames(sheet, frame_width, frame_height, num_frames):
         frames.append(frame)
     return frames
 
+#Idle frames creation
 IDLE_FRAMES_N = 2
-WALKLR_FRAMES_N = 6
 
 LILY_IDLE_IMAGE = pygame.image.load(
     os.path.join('Assets','Girl','Idle.png')
 )
 
+LILY_IDLEF_IMAGE = pygame.image.load(
+    os.path.join('Assets','Girl','Idlef.png')
+)
+
+LILY_IDLEB_IMAGE = pygame.image.load(
+    os.path.join('Assets','Girl','Idleb.png')
+)
+
+idle_frames = [load_frames(LILY_IDLE_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,IDLE_FRAMES_N),
+               [1,2],
+               load_frames(LILY_IDLEF_IMAGE,GIRL_FRAME_WIDTH,GIRL_FRAME_HEIGHT,IDLE_FRAMES_N),
+               load_frames(LILY_IDLEB_IMAGE,GIRL_FRAME_WIDTH,GIRL_FRAME_HEIGHT,IDLE_FRAMES_N)
+               ]
+
+for i in range(IDLE_FRAMES_N):
+    idle_frames[1][i] = pygame.transform.flip(idle_frames[0][i], True, False) 
+    
+idle = [Animation(idle_frames[0],IDLE_FRAMES_N),
+        Animation(idle_frames[1],IDLE_FRAMES_N),
+        Animation(idle_frames[2],IDLE_FRAMES_N),
+        Animation(idle_frames[3],IDLE_FRAMES_N)
+        ]
+
+#Walk frames creation
+WALK_FRAMES_N = 6
+
 LILY_WALK_RIGHT_IMAGE = pygame.image.load(
     os.path.join('Assets','Girl','Walk.png')
 )
 
-idle_frames = load_frames(LILY_IDLE_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,IDLE_FRAMES_N)
-walkr_frames = load_frames(LILY_WALK_RIGHT_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,WALKLR_FRAMES_N)
-walkl_frames = [1,2,3,4,5,6]
+LILY_WALK_FRONT_IMAGE = pygame.image.load(
+    os.path.join('Assets','Girl','Walkf.png')
+)
 
-for i in range(len(walkr_frames)):
-    walkl_frames[i] = pygame.transform.flip(walkr_frames[i], True, False) 
+LILY_WALK_BACK_IMAGE = pygame.image.load(
+    os.path.join('Assets','Girl','Walkb.png')
+)
 
-idle = Animation(idle_frames,IDLE_FRAMES_N)
-walkr = Animation(walkr_frames,WALKLR_FRAMES_N)
-walkl = Animation(walkl_frames,WALKLR_FRAMES_N)
+walk_frames = [load_frames(LILY_WALK_RIGHT_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,WALK_FRAMES_N),
+               [1,2,3,4,5,6],
+               load_frames(LILY_WALK_FRONT_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,WALK_FRAMES_N),
+               load_frames(LILY_WALK_BACK_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT, WALK_FRAMES_N)
+               ]
+
+for i in range(WALK_FRAMES_N):
+    walk_frames[1][i] = pygame.transform.flip(walk_frames[0][i], True, False) 
+
+walk = [Animation(walk_frames[0],WALK_FRAMES_N),                #walk directions 0 = right, 1 = left, 2 = up, 3 = down
+        Animation(walk_frames[1],WALK_FRAMES_N),
+        Animation(walk_frames[2],WALK_FRAMES_N),
+        Animation(walk_frames[3],WALK_FRAMES_N)
+        ]
