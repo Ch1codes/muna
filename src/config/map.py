@@ -1,6 +1,6 @@
 import pygame
 from .constants import TILE_HEIGHT, TILE_WIDTH
-from . color import *
+from .color import *
 
 map = [
     ['b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b'],
