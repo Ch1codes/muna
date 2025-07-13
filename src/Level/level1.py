@@ -2,7 +2,7 @@ import pygame
 import os
 import random
 from config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from config.movements import Character_state, Level1_movement 
+from config.movements import Character_state
 
 SKELETONS= []
 SKELETONS_X= []
@@ -17,7 +17,7 @@ BLACK= (0,0,0)
 
 
 
-character_state= Level1_movement(BORDER_POS-50, SCREEN_HEIGHT/2, 0)
+character_state=Character_state(BORDER_POS-50, SCREEN_HEIGHT/2, 0)
      
 
 def preload():
