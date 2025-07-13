@@ -3,27 +3,6 @@ from .constants import TILE_HEIGHT, TILE_WIDTH
 from .color import *
 # from .background import temple_tile
 
-map = [
-    ['b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b'],
-    ['b','x','x','x','x','x','x','x','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','x','x','x','x','x','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','b','b','b','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','x','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','x','x','x','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','b','b','b','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','b','b','b','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','b','b','b','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','x','x','b','b','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','x','b'],   
-    ['b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b'],
-]
-
 class Tile:
     def __init__(self, x, y):
         self.place = pygame.Rect(x, y, TILE_WIDTH, TILE_HEIGHT)
@@ -39,13 +18,17 @@ class Boundary(Tile):
         if self.place.colliderect(hitbox):
             return True
 
-tiles = []
-bound = []
+def load_map(map):
+    # tiles = []
+    bound = []
 
-for i in range(len(map)):
-    for j in range(len(map[0])):
-        if(map[i][j]=='x'):
-            tiles.append(Tile(j*TILE_WIDTH, i*TILE_HEIGHT))
-        elif(map[i][j]=='b'):
-            tiles.append(Boundary(j*TILE_WIDTH, i*TILE_HEIGHT))
-            bound.append(tiles[i*len(map[0])+j].place)
+    for i in range(len(map)):
+        for j in range(len(map[0])):
+            # if(map[i][j]=='x'):
+                # tiles.append(Tile(j*TILE_WIDTH, i*TILE_HEIGHT))
+            if(map[i][j]=='b'):
+                # tiles.append(Boundary(j*TILE_WIDTH, i*TILE_HEIGHT))
+                bound.append(Boundary(j*TILE_WIDTH, i*TILE_HEIGHT).place)
+    
+    return bound
+            

@@ -1,7 +1,7 @@
 import pygame
 
 from .animations import idle, walk
-from .constants import WALK_SPEED, GIRL_FRAME_HEIGHT, GIRL_FRAME_WIDTH
+from .constants import WALK_SPEED, GIRL_FRAME_HEIGHT, GIRL_FRAME_WIDTH, HITBOX_WIDTH, HITBOX_HEIGHT
 
 class Character_state:
        def __init__(self, x, y, bound):
@@ -9,7 +9,7 @@ class Character_state:
               self.y = y
               self.direction = 0
               self.frame_type = idle[self.direction]
-              self.hitbox = pygame.Rect(self.x - 10, self.y - 10, GIRL_FRAME_WIDTH - 10, GIRL_FRAME_HEIGHT - 40)
+              self.hitbox = pygame.Rect(self.x, self.y, HITBOX_WIDTH, HITBOX_HEIGHT)
               self.bound = bound
 
        def character_movement(self, keys):
@@ -46,4 +46,4 @@ class Character_state:
                             self.y = self.y - WALK_SPEED
                      else:
                             self.y = self.y + WALK_SPEED
-              self.hitbox.update(self.x + 10, self.y + 80, GIRL_FRAME_WIDTH - 20, GIRL_FRAME_HEIGHT - 80)
+              self.hitbox.update(self.x + (GIRL_FRAME_WIDTH - HITBOX_WIDTH)/2 , self.y + (GIRL_FRAME_HEIGHT - HITBOX_HEIGHT)-20, HITBOX_WIDTH, HITBOX_HEIGHT)
