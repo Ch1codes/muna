@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import pygame
 import os
 import random
@@ -68,3 +69,6 @@ def draw(SCREEN, frame_timer, keys):
     
 
     
+=======
+
+>>>>>>> main
