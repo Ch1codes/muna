@@ -2,7 +2,7 @@ import pygame
 import os
 import random
 from config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from config.movements import Character_state, Level1_movement
+from config.movements import Character_state, Level1_movement 
 
 SKELETONS= []
 SKELETONS_X= []
