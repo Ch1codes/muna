@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 from config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from config.movements import Character_state, Level1_movement
 
 SKELETONS= []
 SKELETONS_X= []
@@ -9,15 +10,23 @@ SKELETONS_Y= []
 SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 6
+BORDER_POS = 350
 
-    
-    
+BORDER= pygame.Rect(BORDER_POS, 0, 5, SCREEN_HEIGHT)
+BLACK= (0,0,0)
+
+
+
+character_state= Level1_movement(BORDER_POS-50, SCREEN_HEIGHT/2, 0)
+     
 
 def preload():
     global LEVEL1_BG_IMAGE, BUFFER
     
     LEVEL1_BG= pygame.image.load(os.path.join('Assets','Background','level1-bg.png')).convert()
     LEVEL1_BG_IMAGE= pygame.transform.scale(LEVEL1_BG, (1400, 900))
+    
+    
     
     for skeletons in range(NO_of_SKELETONS):
         SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,50)))
@@ -30,7 +39,11 @@ def preload():
     BUFFER.blit(LEVEL1_BG_IMAGE, (0, 0))
 
 
-def draw(SCREEN, character_state, frame_timer):
+def draw(SCREEN, frame_timer, keys):
+    
+    if character_state.x>0 and character_state.x<1350:
+        character_state.character_movement(keys)
+    
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
         SCREEN.blit(SKELETONS[i], (SKELETONS_X[i], SKELETONS_Y[i]))
@@ -44,10 +57,14 @@ def draw(SCREEN, character_state, frame_timer):
         elif SKELETONS_Y[i] < 0:
             SKELETONSY_CHANGE[i]= 1
             SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
+            
     
     SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
+    pygame.draw.rect(SCREEN, BLACK, BORDER)
     
     pygame.display.update()
 
+
+    
 
     
