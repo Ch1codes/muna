@@ -12,23 +12,28 @@ SKELETONS_Y= []
 SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 6
-BORDER_POS = 350
+BORDER_POS = 300
+
+BULLETS= pygame.image.load(os.path.join('Assets', 'Background', 'bullet.png'))
+BULLETS_X= 0
+BULLETS_Y= 0
+BULLETS_STATE= "ready"
+BULLETS_X_CHANGE= 10
+BULLETS_Y_CHANGE= 0
 
 BORDER= pygame.Rect(BORDER_POS, 0, 5, SCREEN_HEIGHT)
 BLACK= (0,0,0)
 
 BOUND = load_map(map_sketch.map_level1)
 
-character_state=Character_state(BORDER_POS-50, SCREEN_HEIGHT/2, BOUND)
+character_state=Character_state(BORDER_POS-50, SCREEN_HEIGHT/2 - 50, BOUND)
      
 
 def preload():
     global LEVEL1_BG_IMAGE, BUFFER
     
     LEVEL1_BG= pygame.image.load(os.path.join('Assets','Background','level1-bg.png')).convert()
-    LEVEL1_BG_IMAGE= pygame.transform.scale(LEVEL1_BG, (1400, 900))
-    
-    
+    LEVEL1_BG_IMAGE= pygame.transform.scale(LEVEL1_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
     
     for skeletons in range(NO_of_SKELETONS):
         SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,50)))
@@ -39,11 +44,31 @@ def preload():
 
     BUFFER = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     BUFFER.blit(LEVEL1_BG_IMAGE, (0, 0))
+    
+def fire_bullets(SCREEN,x,y):
+    global BULLETS_STATE
+    BULLETS_STATE= "fire"
+    SCREEN.blit(BULLETS, (x+16,y+10))
+    if x>SCREEN_WIDTH:
+        BULLETS_STATE= "ready"
+        BULLETS_X= BORDER_POS-50
+    
+def bullet_control(SCREEN, keys):
+    global BULLETS_STATE, BULLETS_X, BULLETS_Y
+    if keys[pygame.K_SPACE]:
+        if BULLETS_STATE == "ready":
+            BULLETS_X= BORDER_POS-50
+            BULLETS_Y= SCREEN_HEIGHT/2 - 25
+            fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
+            
+    
+    
 
 def draw(SCREEN, frame_timer, keys):
     
     # if character_state.x>0 and character_state.x<1350:
     character_state.character_movement(keys)
+    
     
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
@@ -59,9 +84,19 @@ def draw(SCREEN, frame_timer, keys):
             SKELETONSY_CHANGE[i]= 1
             SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
             
+            
+    bullet_control(SCREEN, keys)
+   
+    
+    if BULLETS_STATE == "fire":
+        global BULLETS_X
+        BULLETS_X += BULLETS_X_CHANGE
+        fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
+        
+    
+        
+    
     
     SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
-    # pygame.draw.rect(SCREEN, BLACK, character_state.hitbox)
-    # pygame.draw.rect(SCREEN, BLACK, BORDER)
-    
+
     pygame.display.update()
