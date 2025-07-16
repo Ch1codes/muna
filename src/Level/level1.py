@@ -1,5 +1,6 @@
 import pygame
 import os
+import math
 import random
 from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from ..config.movements import Character_state
@@ -58,17 +59,23 @@ def bullet_control(SCREEN, keys):
     if keys[pygame.K_SPACE]:
         if BULLETS_STATE == "ready":
             BULLETS_X= BORDER_POS-50
-            BULLETS_Y= SCREEN_HEIGHT/2 - 25
             fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
             
-    
+
+def isCollision(enemyX, enemyY, bulletX, bulletY):
+    distance = math.sqrt(math.pow((enemyX-bulletX),2)+ math.pow((enemyY-bulletY),2))
+    if distance < 27:
+        print("collided")
+        return True
+    else:
+        return False
     
 
 def draw(SCREEN, frame_timer, keys):
     
     # if character_state.x>0 and character_state.x<1350:
     character_state.character_movement(keys)
-    
+    global BULLETS_X, BULLETS_STATE
     
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
@@ -84,17 +91,21 @@ def draw(SCREEN, frame_timer, keys):
             SKELETONSY_CHANGE[i]= 1
             SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
             
+        collision=isCollision(SKELETONS_X[i], SKELETONS_Y[i], BULLETS_X, BULLETS_Y)
+        if collision:
+            BULLETS_X= BORDER_POS-50
+            BULLETS_STATE= "ready"
+            SKELETONS_X[i]= random.randint(400,1350)
+            SKELETONS_Y[i]= random.randint(50,850)
+            
             
     bullet_control(SCREEN, keys)
-   
     
     if BULLETS_STATE == "fire":
-        global BULLETS_X
+        
         BULLETS_X += BULLETS_X_CHANGE
         fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
-        
     
-        
     
     
     SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
