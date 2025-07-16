@@ -13,12 +13,7 @@ class Animation:
         if(self.timer%(FPS/self.no_of_frames)==0):
             self.frame_index = (self.frame_index+1)%self.no_of_frames
         self.timer = (self.timer + 1) % FPS
-        return self.frame_name[self.frame_index]
-    
-    def reset_timer(self):
-        self.timer = 0
-        # print(pygame.key.get_just_released())
-        
+        return self.frame_name[self.frame_index]        
 
 def load_frames(sheet, frame_width, frame_height, num_frames):
     frames = []

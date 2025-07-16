@@ -59,6 +59,7 @@ def bullet_control(SCREEN, keys):
     if keys[pygame.K_SPACE]:
         if BULLETS_STATE == "ready":
             BULLETS_X= BORDER_POS-50
+            BULLETS_Y= SCREEN_HEIGHT/2 - 50
             fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
             
 
@@ -109,6 +110,6 @@ def draw(SCREEN, keys):
     
     
     
-    SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
+    SCREEN.blit(character_state.frame_type.animate(),(character_state.x,character_state.y))
 
     pygame.display.update()
