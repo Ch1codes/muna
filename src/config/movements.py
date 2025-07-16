@@ -16,12 +16,7 @@ class Character_state:
        def character_movement(self, keys):
               if not self.hitbox.collidelistall(self.bound):
 
-                     if self.frame_type != shoot:
-                            if keys[pygame.K_SPACE]:
-                                   self.direction = 0
-                                   self.frame_type = shoot
-
-                            elif keys[pygame.K_LEFT]:
+                            if keys[pygame.K_LEFT]:
                                    self.direction = 1
                                    self.frame_type = walk[self.direction]
                                    self.x = self.x - WALK_SPEED
@@ -45,10 +40,7 @@ class Character_state:
                                    self.frame_type = idle[self.direction]
                                    for walkd in walk:
                                           walkd.timer = 0
-                     else:  
-                            if shoot.timer == 59:
-                                   shoot.timer = 0
-                                   self.frame_type = idle[self.direction]
+                     
 
               else:
                      if self.direction == 0:

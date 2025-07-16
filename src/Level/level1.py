@@ -6,6 +6,7 @@ from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from ..config.movements import Character_state
 from ..config.map import load_map
 from ..config import map_sketch
+from ..config.animations import shoot, idle
 
 SKELETONS= []
 SKELETONS_X= []
@@ -15,7 +16,7 @@ SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 10
 BORDER_POS = 300
 
-BULLETS= pygame.image.load(os.path.join('Assets', 'Background', 'bullet.png'))
+BULLETS= pygame.transform.scale((pygame.image.load(os.path.join('Assets', 'Background', 'bullet.png'))), (20,20))
 BULLETS_X= 0
 BULLETS_Y= 0
 BULLETS_STATE= "ready"
@@ -38,7 +39,7 @@ def preload():
     LEVEL1_BG_IMAGE= pygame.transform.scale(LEVEL1_BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
     
     for skeletons in range(NO_of_SKELETONS):
-        SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,50)))
+        SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,70)))
         SKELETONS_X.append(random.randint(1100,1350))
         SKELETONS_Y.append(random.randint(50,850))
         SKELETONSX_CHANGE.append(40)
@@ -59,6 +60,7 @@ def bullet_control(SCREEN, keys, POS_X, POS_Y):
     global BULLETS_STATE, BULLETS_X, BULLETS_Y
     if keys[pygame.K_SPACE]:
         if BULLETS_STATE == "ready":
+            character_state.frame_type = shoot
             BULLETS_X= POS_X
             BULLETS_Y= POS_Y
             fire_bullets(SCREEN, BULLETS_X, BULLETS_Y)
@@ -73,10 +75,18 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
         return False
     
 
-def draw(SCREEN, frame_timer, keys):
+def draw(SCREEN, keys):
     
     # if character_state.x>0 and character_state.x<1350:
-    character_state.character_movement(keys)
+    
+    
+    if character_state.frame_type != shoot:
+        character_state.character_movement(keys)
+    else:  
+        if shoot.timer == 59:
+            shoot.timer = 0
+            character_state.frame_type = idle[character_state.direction]
+        
     POS_X= character_state.x
     POS_Y= character_state.y
     global BULLETS_X, BULLETS_STATE
