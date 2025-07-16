@@ -112,6 +112,6 @@ def draw(SCREEN, frame_timer, keys):
     
     
     
-    SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
+    SCREEN.blit(character_state.frame_type.animate(),(character_state.x,character_state.y))
 
     pygame.display.update()
