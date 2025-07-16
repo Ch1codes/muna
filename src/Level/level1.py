@@ -1,7 +1,7 @@
 import pygame
 import os
 import random
-from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from ..config.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from ..config.movements import Character_state
 from ..config.map import load_map
 from ..config import map_sketch
@@ -40,10 +40,12 @@ def preload():
     BUFFER = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     BUFFER.blit(LEVEL1_BG_IMAGE, (0, 0))
 
-def draw(SCREEN, frame_timer, keys):
+def draw(SCREEN, keys):
     
     # if character_state.x>0 and character_state.x<1350:
+    
     character_state.character_movement(keys)
+
     
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
@@ -60,7 +62,7 @@ def draw(SCREEN, frame_timer, keys):
             SKELETONS_X[i] -= SKELETONSX_CHANGE[i]
             
     
-    SCREEN.blit(character_state.frame_type.animate(frame_timer),(character_state.x,character_state.y))
+    SCREEN.blit(character_state.frame_type.animate(),(character_state.x,character_state.y))
     # pygame.draw.rect(SCREEN, BLACK, character_state.hitbox)
     # pygame.draw.rect(SCREEN, BLACK, BORDER)
     

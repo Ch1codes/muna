@@ -19,7 +19,7 @@ def main():
     
     load_assets()
 
-    frame_timer = 0
+    # frame_timer = 0
 #2. Game Loop
     run = True
     while run:
@@ -32,9 +32,9 @@ def main():
 
         keys = pygame.key.get_pressed()               
         
-        level1.draw(SCREEN, frame_timer, keys)
+        level1.draw(SCREEN, keys)
 
-        frame_timer = (frame_timer + 1) % FPS                      # frame counter ; may need to create a better way
+        # frame_timer = (frame_timer + 1) % FPS                      # frame counter ; may need to create a better way
 
     pygame.quit()
 
