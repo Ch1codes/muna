@@ -8,6 +8,10 @@ from ..config.map import load_map
 from ..config import map_sketch
 from ..config.animations import shoot, idle
 
+pygame.font.init()
+font1= pygame.font.SysFont("Times New Roman", 32, bold=False)
+font2= pygame.font.SysFont("Times New Roman", 80, bold=True)
+
 SKELETONS= []
 SKELETONS_X= []
 SKELETONS_Y= []
@@ -15,9 +19,12 @@ SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 10
 BORDER_POS = 300
-TOTAL_SKELETONS= 50
+TOTAL_SKELETONS= 5
 COLLIDED_SKELETONS=0
-SKELETONS_CROSSED= 0
+SKELETONS_CROSSED= 5
+
+# text= font.render("Collided Skeletons: " + str(COLLIDED_SKELETONS), True, (255,255,255))
+# text_rect = text.get_rect(center=(150, 20))
 
 BULLETS= pygame.transform.scale((pygame.image.load(os.path.join('Assets', 'Background', 'bullet.png'))), (20,20))
 BULLETS_X= 0
@@ -45,7 +52,7 @@ def preload():
         SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,70)))
         SKELETONS_X.append(random.randint(1100,1350))
         SKELETONS_Y.append(random.randint(50,850))
-        SKELETONSX_CHANGE.append(150)
+        SKELETONSX_CHANGE.append(300)
         SKELETONSY_CHANGE.append(1)
 
     
@@ -95,6 +102,11 @@ def draw(SCREEN, keys):
     POS_X= character_state.x
     POS_Y= character_state.y
     global BULLETS_X, BULLETS_STATE, COLLIDED_SKELETONS, SKELETONS_CROSSED
+
+    COLLIDED_TEXT= font1.render("Collided Skeletons: " + str(COLLIDED_SKELETONS), True, (255,255,255))
+    CROSSED_TEXT= font1.render("Skeletons Crossed: " + str(SKELETONS_CROSSED), True, (0,0,0))
+    GAME_OVER_TEXT= font2.render("GAME OVER!", True, (0,0,0))
+    LEVEL_COMPLETE_TEXT= font2.render("LEVEL COMPLETED!", True, (0,0,0))
     
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
@@ -118,19 +130,36 @@ def draw(SCREEN, keys):
             SKELETONS_Y[i]= random.randint(50,850)
             COLLIDED_SKELETONS += 1
             print(COLLIDED_SKELETONS)
+            
+            
+            
             if COLLIDED_SKELETONS >= TOTAL_SKELETONS:
+                SCREEN.blit(LEVEL_COMPLETE_TEXT, (330,400))
+                pygame.display.update()
+                pygame.time.delay(5000)
+                SKELETONS_X[i]= 2000
                 return True
             
+        SCREEN.blit(COLLIDED_TEXT, (0,0))
+            
         if SKELETONS_X[i]<BORDER_POS:
-            SKELETONS_CROSSED += 1
+            SKELETONS_CROSSED -= 1
             SKELETONS_X[i]= random.randint(1100,1350)
             SKELETONS_Y[i]= random.randint(50,850)
             print(SKELETONS_CROSSED)
-        if SKELETONS_CROSSED >= 5:
+
+        SCREEN.blit(CROSSED_TEXT, (1100,0))
+            
+        if SKELETONS_CROSSED == 0:
+            SCREEN.blit(GAME_OVER_TEXT, (450, 400))
+            pygame.display.update()
+            pygame.time.delay(5000)
+            
             return True
             
             
     bullet_control(SCREEN, keys, POS_X, POS_Y)
+    
     
     if BULLETS_STATE == "fire":
         
