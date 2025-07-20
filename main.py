@@ -31,7 +31,9 @@ def main():
 
         keys = pygame.key.get_pressed()               
         
-        level1.draw(SCREEN, keys)
+        L1=level1.draw(SCREEN, keys)
+        if L1:
+            break
 
     pygame.quit()
 

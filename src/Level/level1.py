@@ -15,6 +15,9 @@ SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 10
 BORDER_POS = 300
+TOTAL_SKELETONS= 50
+COLLIDED_SKELETONS=0
+SKELETONS_CROSSED= 0
 
 BULLETS= pygame.transform.scale((pygame.image.load(os.path.join('Assets', 'Background', 'bullet.png'))), (20,20))
 BULLETS_X= 0
@@ -42,11 +45,13 @@ def preload():
         SKELETONS.append(pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'Background' ,'skeletons.png')).convert_alpha(), (50,70)))
         SKELETONS_X.append(random.randint(1100,1350))
         SKELETONS_Y.append(random.randint(50,850))
-        SKELETONSX_CHANGE.append(40)
+        SKELETONSX_CHANGE.append(150)
         SKELETONSY_CHANGE.append(1)
 
+    
     BUFFER = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     BUFFER.blit(LEVEL1_BG_IMAGE, (0, 0))
+    pygame.draw.rect(BUFFER, BLACK, (BORDER_POS, 0, 5, SCREEN_HEIGHT))
     
 def fire_bullets(SCREEN,x,y):
     global BULLETS_STATE
@@ -68,18 +73,18 @@ def bullet_control(SCREEN, keys, POS_X, POS_Y):
 
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt(math.pow((enemyX-bulletX),2)+ math.pow((enemyY-bulletY),2))
-    if distance < 27:
+    if distance < 40:
         print("collided")
         return True
     else:
         return False
     
 
+
+    
+
 def draw(SCREEN, keys):
-    
-    # if character_state.x>0 and character_state.x<1350:
-    
-    
+     
     if character_state.frame_type != shoot:
         character_state.character_movement(keys)
     else:  
@@ -89,7 +94,7 @@ def draw(SCREEN, keys):
         
     POS_X= character_state.x
     POS_Y= character_state.y
-    global BULLETS_X, BULLETS_STATE
+    global BULLETS_X, BULLETS_STATE, COLLIDED_SKELETONS, SKELETONS_CROSSED
     
     SCREEN.blit(BUFFER, (0,0))
     for i in range(NO_of_SKELETONS):
@@ -109,8 +114,20 @@ def draw(SCREEN, keys):
         if collision:
             BULLETS_X= BORDER_POS-50
             BULLETS_STATE= "ready"
-            SKELETONS_X[i]= random.randint(400,1350)
+            SKELETONS_X[i]= random.randint(1100,1350)
             SKELETONS_Y[i]= random.randint(50,850)
+            COLLIDED_SKELETONS += 1
+            print(COLLIDED_SKELETONS)
+            if COLLIDED_SKELETONS >= TOTAL_SKELETONS:
+                return True
+            
+        if SKELETONS_X[i]<BORDER_POS:
+            SKELETONS_CROSSED += 1
+            SKELETONS_X[i]= random.randint(1100,1350)
+            SKELETONS_Y[i]= random.randint(50,850)
+            print(SKELETONS_CROSSED)
+        if SKELETONS_CROSSED >= 5:
+            return True
             
             
     bullet_control(SCREEN, keys, POS_X, POS_Y)
