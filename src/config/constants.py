@@ -1,8 +1,10 @@
-SCREEN_WIDTH = 1400             # 1120
-SCREEN_HEIGHT = 900             # 720
+SCREEN_WIDTH = 1400            # 1120 1400
+SCREEN_HEIGHT = 900            # 720
 GIRL_FRAME_WIDTH = 60
 GIRL_FRAME_HEIGHT = 120
 FPS = 60
-TILE_WIDTH = 50               # 40
-TILE_HEIGHT = 50              # 40
+TILE_WIDTH = 50               # 40 50
+TILE_HEIGHT = 50              # 40 50
 WALK_SPEED = 2
+HITBOX_WIDTH = 40
+HITBOX_HEIGHT = 50

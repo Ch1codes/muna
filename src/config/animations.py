@@ -7,11 +7,13 @@ class Animation:
         self.frame_name = name
         self.no_of_frames = n
         self.frame_index = 0
+        self.timer = 0
 
-    def animate(self,timer):
-        if(timer%(FPS/self.no_of_frames)==0):
+    def animate(self):
+        if(self.timer%(FPS/self.no_of_frames)==0):
             self.frame_index = (self.frame_index+1)%self.no_of_frames
-        return self.frame_name[self.frame_index]
+        self.timer = (self.timer + 1) % FPS
+        return self.frame_name[self.frame_index]        
 
 def load_frames(sheet, frame_width, frame_height, num_frames):
     frames = []
@@ -79,3 +81,13 @@ walk = [Animation(walk_frames[0],WALK_FRAMES_N),                #walk directions
         Animation(walk_frames[2],WALK_FRAMES_N),
         Animation(walk_frames[3],WALK_FRAMES_N)
         ]
+
+SHOOT_FRAMES_N = 6
+
+LILY_SHOOT_IMAGE = pygame.image.load(
+    os.path.join('Assets','Girl','Shoot.png')
+)
+
+shoot_frames = load_frames(LILY_SHOOT_IMAGE, GIRL_FRAME_WIDTH, GIRL_FRAME_HEIGHT,SHOOT_FRAMES_N)
+
+shoot = Animation(shoot_frames, SHOOT_FRAMES_N)
