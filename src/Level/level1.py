@@ -19,7 +19,7 @@ SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 10
 BORDER_POS = 300
-TOTAL_SKELETONS= 1
+TOTAL_SKELETONS= 25
 COLLIDED_SKELETONS=0
 SKELETONS_CROSSED= 5
 
@@ -171,3 +171,5 @@ def draw(SCREEN, keys):
     SCREEN.blit(character_state.frame_type.animate(),(character_state.x,character_state.y))
 
     pygame.display.update()
+
+    return False

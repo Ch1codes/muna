@@ -1,6 +1,5 @@
 import pygame
 from ..config.movementl2 import Character_state
-from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from ..config.map_sketch import map_level2
 from sys import exit
 
@@ -20,17 +19,10 @@ max_levels = 7
 score = 0
 key = 0
 # Setup
-clock = pygame.time.Clock()
-pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# clock = pygame.time.Clock()
+# pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # pygame.display.set_caption("Mistey")
-test_font = pygame.font.Font('text/Pixeltype.ttf', 100)
-text_surface = test_font.render('Welcome', False, 'RED').convert()
-key_count=test_font.render(f"Key count: {key}", False, 'RED').convert()
 
-# Load images
-restart_img = pygame.image.load('img/restart_btn.png').convert_alpha()
-start_img = pygame.image.load('img/start_btn.png').convert_alpha()
-exit_img = pygame.image.load('img/exit_btn.png').convert_alpha()
 
 # Tree Class
 class Tree(pygame.sprite.Sprite):
@@ -94,8 +86,8 @@ class World():
         self.wall_rects = []  # <-- Add this line
 
         # Preload images
-        self.dirt_img = pygame.transform.scale(pygame.image.load('img/GRASS/random.png'), (tile_size, tile_size))
-        self.grass_img = pygame.transform.scale(pygame.image.load('img/GRASS/road_1.png'), (tile_size, tile_size))
+        self.dirt_img = pygame.transform.scale(pygame.image.load('img/GRASS/Temple_Wall.png'), (tile_size, tile_size))
+        self.grass_img = pygame.transform.scale(pygame.image.load('img/GRASS/Temple_Tile.png'), (tile_size, tile_size))
 
         # Create a surface for the whole map
         map_width = len(data[0]) * tile_size
@@ -155,22 +147,36 @@ class CameraGroup(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
+    
 # Level Data
 
-world = World(map_level2)
 
-# Buttons
-restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
-start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
-exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
+
 # Main Game Loop
-def draw(SCREEN):
+def draw(SCREEN, clock):
+
+    test_font = pygame.font.Font('text/Pixeltype.ttf', 100)
+    # text_surface1 = test_font.render('Welcome', False, 'RED').convert()
+    text_surface2 = test_font.render('Press space to continue.', False, 'WHITE').convert()
+    # key_count=test_font.render(f"Key count: {key}", False, 'RED').convert()
+
+    # Load images
+    # restart_img = pygame.image.load('img/restart_btn.png').convert_alpha()
+    # start_img = pygame.image.load('img/start_btn.png').convert_alpha()
+    # exit_img = pygame.image.load('img/exit_btn.png').convert_alpha()
+
+    # Buttons
+    # restart_button = Button(screen_width // 2 - 50, screen_height // 2 + 100, restart_img)
+    # start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
+    # exit_button = Button(screen_width // 2 + 150, screen_height // 2, exit_img)
+
     main_menu = True
     key = 0
     frame_timer = 0
+    world = World(map_level2)
 
     camera_group = CameraGroup()
-    character_state = Character_state(tile_size * 2, tile_size * (len(map_level2) - 3), 0)
+    character_state = Character_state(tile_size * 2, tile_size * (len(map_level2) - 1), 3)
 
     # Only character and interactive sprites go in camera group
     camera_group.add(character_state)
@@ -179,14 +185,14 @@ def draw(SCREEN):
     while run:
         clock.tick(fps)
 
+        keys = pygame.key.get_pressed()
+
         if main_menu:
-            if exit_button.draw(SCREEN):
-                run = False
-            if start_button.draw(SCREEN):
+            SCREEN.blit(text_surface2, (300, 400))
+            if keys[pygame.K_SPACE]:
                 main_menu = False
-            SCREEN.blit(text_surface, (600, 200))
+            # SCREEN.blit(text_surface1, (600, 200))
         else:
-            keys = pygame.key.get_pressed()
 
             character_state.character_movement(keys, world.wall_rects)
             collected_keys = pygame.sprite.spritecollide(character_state, world.key_group, True)
