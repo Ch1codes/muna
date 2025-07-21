@@ -3,6 +3,7 @@ import pygame
 from src.config.constants import FPS, SCREEN_HEIGHT, SCREEN_WIDTH  #import constants from constants.py
 from src.Level import level1
 from src.Level import level2
+from src.Level import level3
 
 pygame.init()
 
@@ -19,7 +20,7 @@ def load_assets():
 def main():
     clock = pygame.time.Clock()
     
-            
+    L1 = False
     level = 1
     load_assets()
 
@@ -38,17 +39,26 @@ def main():
         match level:
             case 1:
                 L1=level1.draw(SCREEN, keys)
+                # L1 = True
                 if L1:
                     level = 2
-                    pygame.draw.rect(SCREEN, (0, 0, 0), pygame.Rect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT))
+                    continue
             case 2:
-                L2=level2.draw(SCREEN)
+                pygame.draw.rect(SCREEN, (0, 0, 0), pygame.Rect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT))
+                L2=level2.draw(SCREEN, clock)
                 if L2:
                     level = 3
+                    continue
             case 3:
-                x = input("")
-                run = False
-                pass
+                L3 = level3.draw(SCREEN, clock)
+                if L3:
+                    level = 'end'
+                    pygame.draw.rect(SCREEN, (0, 0, 0), pygame.Rect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT))
+                    continue
+            
+            case _:
+                pygame.draw.rect(SCREEN, (0, 0, 0), pygame.Rect(0,0,SCREEN_WIDTH, SCREEN_HEIGHT))
+                
 
     pygame.quit()
 
