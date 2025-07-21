@@ -1,6 +1,5 @@
 import pygame
 from .constants import TILE_HEIGHT, TILE_WIDTH
-from .color import *
 # from .background import temple_tile
 
 class Tile:
