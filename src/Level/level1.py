@@ -19,7 +19,7 @@ SKELETONSX_CHANGE= []
 SKELETONSY_CHANGE= []
 NO_of_SKELETONS= 10
 BORDER_POS = 300
-TOTAL_SKELETONS= 50
+TOTAL_SKELETONS= 1
 COLLIDED_SKELETONS=0
 SKELETONS_CROSSED= 5
 
@@ -155,7 +155,7 @@ def draw(SCREEN, keys):
             pygame.display.update()
             pygame.time.delay(5000)
             
-            return True
+            return False
             
             
     bullet_control(SCREEN, keys, POS_X, POS_Y)
