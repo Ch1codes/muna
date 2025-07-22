@@ -1,33 +1,29 @@
 import pygame
 from sys import exit
 from random import randint, choice
-from ..config.animations import walk_frames  
+from ..config.animations import walk_frames
+
+def draw_outlined_text(surface, text, font, pos, text_color, outline_color=(0, 0, 0)):
+    x, y = pos
+    for dx in [-2, -1, 0, 1, 2]:
+        for dy in [-2, -1, 0, 1, 2]:
+            if dx != 0 or dy != 0:
+                outline = font.render(text, True, outline_color)
+                outline_rect = outline.get_rect(center=(x + dx, y + dy))
+                surface.blit(outline, outline_rect)
+    rendered_text = font.render(text, True, text_color)
+    text_rect = rendered_text.get_rect(center=pos)
+    surface.blit(rendered_text, text_rect)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        player_walk_1 = walk_frames[0][0]
-        player_walk_2 = walk_frames[0][1]
-        player_walk_3 = walk_frames[0][2]
-        player_walk_4 = walk_frames[0][3]
-        player_walk_5 = walk_frames[0][4]
-        player_walk_6 = walk_frames[0][5]
-
-        self.player_walk = [
-            player_walk_1,
-            player_walk_2,
-            player_walk_3,
-            player_walk_4,
-            player_walk_5,
-            player_walk_6,
-        ]
+        self.player_walk = walk_frames[0][:6]
         self.player_index = 0
         self.player_jump = walk_frames[0][4]
-
         self.image = self.player_walk[self.player_index]
         self.rect = self.image.get_rect(midbottom=(80, 850))
         self.gravity = 0
-
         self.jump_sound = pygame.mixer.Sound('Assets/level3/audio/jump.mp3')
         self.jump_sound.set_volume(0.5)
 
@@ -76,7 +72,6 @@ class Obstacle(pygame.sprite.Sprite):
             snail_2 = pygame.image.load('Assets/level3/graphics/snail/snail2.png').convert_alpha()
             self.frames = [snail_1, snail_2]
             y_pos = 850
-
         self.animation_index = 0
         self.image = self.frames[self.animation_index]
         self.rect = self.image.get_rect(midbottom=(randint(1500, 1600), y_pos))
@@ -111,31 +106,20 @@ def collision_sprite(player, obstacle_group):
     else:
         return True
 
-pygame.init()
-screen = pygame.display.set_mode((1400, 900))
-pygame.display.set_caption('Run Muna Run')
-clock = pygame.time.Clock()
-
-def preload():
-    bg_music = pygame.mixer.Sound('Assets/level3/audio/music.wav')
-    bg_music.play(loops=-1)
-
-
-
-
-def draw(SCREEN, clock):
+def draw():
+    global failed_attempt, game_active
+    pygame.init()
+    screen = pygame.display.set_mode((1400, 900))
+    pygame.display.set_caption('Run Muna Run')
+    clock = pygame.time.Clock()
     test_font = pygame.font.Font('Assets/level3/font/Pixeltype.ttf', 50)
+
     game_active = False
-    start_time = 0
-    score = 0
-    level_completed = False
     failed_attempt = False
+    level_completed = False
+    score = 0
+    start_time = 0
 
-    # Timer
-    obstacle_timer = pygame.USEREVENT + 1
-    pygame.time.set_timer(obstacle_timer, 1500)
-
-    # Groups
     player = pygame.sprite.GroupSingle()
     player.add(Player())
     obstacle_group = pygame.sprite.Group()
@@ -145,28 +129,42 @@ def draw(SCREEN, clock):
     intro_surface = pygame.image.load('Assets/level3/introscreen.png').convert_alpha()
     outro_surface = pygame.image.load('Assets/level3/outroscreen.png').convert_alpha()
 
-    first_line = test_font.render('Now, the final test remains.', False, (111, 196, 169))
-    first_line_rect = first_line.get_rect(center=(700, 100))
-    second_line = test_font.render('Can Muna escape with her fortune?', False, (111, 196, 169))
-    second_line_rect = second_line.get_rect(center=(700, 150))
-    third_line = test_font.render('The evil Snails and evil Flies are coming!', False, (111, 196, 169))
-    third_line_rect = third_line.get_rect(center=(700, 200))
+    INTRO_TEXT_COLOR = (255, 255, 255)
+    INTRO_SHADOW_COLOR = (0, 0, 0)
+    OUTRO_TEXT_COLOR = (255, 215, 0)
+    OUTRO_SHADOW_COLOR = (0, 0, 0)
 
-    game_message = test_font.render('Press space to run', False, (111, 196, 169))
-    game_message_rect = game_message.get_rect(center=(700, 700))
+    intro_lines = [
+        ("Now, the final test remains.", (700, 100)),
+        ("Can Muna escape with her fortune?", (700, 150)),
+        ("The evil Snails and evil Flies are coming!", (700, 200))
+    ]
 
-    # preload()
+    try_again_msg = ("TRY AGAIN!", (700, 700))
+    press_space_msg = ("Press space to run", (700, 700))
 
-    while True:
+    outro_lines = [
+        ("Congratulations!!!", (700, 450)),
+        ("Muna has reached safely back to the human realms.", (700, 530)),
+        ("Now she can use her riches for good causes.", (700, 580))
+    ]
+
+    OBSTACLE_TIMER = pygame.USEREVENT + 1
+    pygame.time.set_timer(OBSTACLE_TIMER, 1500)
+
+    running = True
+
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
 
             if game_active and not level_completed:
-                if event.type == obstacle_timer and player.sprite.rect.x <= 1100:
+                if event.type == OBSTACLE_TIMER and player.sprite.rect.x <= 1100:
                     obstacle_group.add(Obstacle(choice(['fly', 'fly', 'snail', 'snail', 'snail'])))
-            elif not game_active and failed_attempt:
+
+            if not game_active and failed_attempt:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     failed_attempt = False
                     obstacle_group.empty()
@@ -174,7 +172,14 @@ def draw(SCREEN, clock):
                     score = 0
                     game_active = True
                     start_time = int(pygame.time.get_ticks() / 1000)
-            elif not game_active and not failed_attempt:
+
+            if not game_active and not failed_attempt and not level_completed:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    game_active = True
+                    score = 0
+                    start_time = int(pygame.time.get_ticks() / 1000)
+
+            if level_completed:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     level_completed = False
                     obstacle_group.empty()
@@ -183,50 +188,39 @@ def draw(SCREEN, clock):
                     game_active = True
                     start_time = int(pygame.time.get_ticks() / 1000)
 
-        if game_active and not level_completed:
-            SCREEN.blit(sky_surface, (0, 0))
-            SCREEN.blit(ground_surface, (0, 850))
+        if not game_active and not failed_attempt and not level_completed:
+            # Show intro screen
+            screen.blit(intro_surface, (0, 0))
+            for text, center in intro_lines:
+                draw_outlined_text(screen, text, test_font, center, INTRO_TEXT_COLOR, INTRO_SHADOW_COLOR)
+            draw_outlined_text(screen, press_space_msg[0], test_font, press_space_msg[1], INTRO_TEXT_COLOR, INTRO_SHADOW_COLOR)
+
+        elif game_active and not level_completed:
+            screen.blit(sky_surface, (0, 0))
+            screen.blit(ground_surface, (0, 850))
             score = display_score(start_time)
-
-            player.draw(SCREEN)
+            player.draw(screen)
             player.update()
-
-            obstacle_group.draw(SCREEN)
+            obstacle_group.draw(screen)
             obstacle_group.update()
-
             game_active = collision_sprite(player, obstacle_group)
-
             if player.sprite.rect.x >= 1300:
                 level_completed = True
+                game_active = False
 
         elif level_completed:
-            SCREEN.blit(outro_surface, (0, 0))
-            level_complete_text = test_font.render('Level Completed', False, (111, 196, 169))
-            level_complete_rect = level_complete_text.get_rect(center=(700, 450))
-            SCREEN.blit(level_complete_text, level_complete_rect)
-            return True
+            screen.blit(outro_surface, (0, 0))
+            box_rect = pygame.Surface((900, 160), pygame.SRCALPHA)
+            box_rect.fill((0, 0, 0, 10))
+            screen.blit(box_rect, (250, 430))
+            for text, center in outro_lines:
+                draw_outlined_text(screen, text, test_font, center, OUTRO_TEXT_COLOR, OUTRO_SHADOW_COLOR)
 
         elif failed_attempt:
-            SCREEN.blit(intro_surface, (0, 0))
-            try_again_text = test_font.render('TRY AGAIN!', False, (111, 196, 169))
-            try_again_rect = try_again_text.get_rect(center=(700, 400))
-            SCREEN.blit(first_line, first_line_rect)
-            SCREEN.blit(second_line, second_line_rect)
-            SCREEN.blit(third_line, third_line_rect)
-            SCREEN.blit(try_again_text, try_again_rect)
-
-        else:
-            SCREEN.blit(intro_surface, (0, 0))
-            score_message = test_font.render('TRY AGAIN!', False, (111, 196, 169))
-            score_message_rect = score_message.get_rect(center=(700, 400))
-            SCREEN.blit(first_line, first_line_rect)
-            SCREEN.blit(second_line, second_line_rect)
-            SCREEN.blit(third_line, third_line_rect)
-
-            if score == 0:
-                SCREEN.blit(game_message, game_message_rect)
-            else:
-                SCREEN.blit(score_message, score_message_rect)
+            screen.blit(intro_surface, (0, 0))
+            for text, center in intro_lines:
+                draw_outlined_text(screen, text, test_font, center, INTRO_TEXT_COLOR, INTRO_SHADOW_COLOR)
+            draw_outlined_text(screen, try_again_msg[0], test_font, try_again_msg[1], INTRO_TEXT_COLOR, INTRO_SHADOW_COLOR)
 
         pygame.display.update()
         clock.tick(60)
