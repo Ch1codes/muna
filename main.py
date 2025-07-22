@@ -8,7 +8,7 @@ from src.Level import level3
 
 pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Lily's Adventure")
+pygame.display.set_caption("Muna's Adventure")
 
 def draw_outlined_text(surface, text, font, pos, text_color, outline_color=(0, 0, 0)):
     x, y = pos
@@ -45,9 +45,9 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        # ---------- Intro Screen ----------
+   
         if state == 'start':
-            level1.reset_state()  # <--- Reset Level 1 global state
+            level1.reset_state()  
             SCREEN.blit(intro_bg1, (0, 0))
             lines = [
                 "The day was cloudy, it would have rained soon.",
@@ -67,7 +67,6 @@ def main():
                 state = 'level1'
             continue
 
-        # ---------- Level 1 ----------
         if state == 'level1':
             result = level1.draw(SCREEN, keys)
             if result == True:
@@ -79,7 +78,7 @@ def main():
             pygame.display.update()
             continue
 
-        # ---------- Level 1 ➡ Level 2 Transition ----------
+       
         if state == 'level1intro2':
             SCREEN.blit(intro_bg2, (0, 0))
             lines = [
@@ -97,7 +96,6 @@ def main():
                 state = 'level2'
             continue
 
-        # ---------- Level 2 ----------
         if state == 'level2':
             SCREEN.fill((0, 0, 0))
             result = level2.draw(SCREEN, clock)
@@ -106,14 +104,13 @@ def main():
             pygame.display.update()
             continue
 
-        # ---------- Level 3 ----------
+    
         if state == 'level3':
             finished = level3.draw()
             if finished:
                 state = 'end'
             continue
 
-        # ---------- Finish ----------
         if state == 'end':
             pygame.quit()
             break

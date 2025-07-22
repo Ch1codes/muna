@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.player_walk[self.player_index]
         self.rect = self.image.get_rect(midbottom=(80, 850))
         self.gravity = 0
-        self.jump_sound = pygame.mixer.Sound('Assets/level3/audio/jump.mp3')
+        self.jump_sound = pygame.mixer.Sound('audio/jump.ogg')
         self.jump_sound.set_volume(0.5)
 
     def player_input(self):
